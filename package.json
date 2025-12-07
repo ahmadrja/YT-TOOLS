@@ -1,0 +1,23 @@
+{
+  "name": "ytpanel-creator-tools",
+  "version": "1.0.0",
+  "description": "Ultimate YouTube Creator Tools - AI Powered",
+  "main": "index.js",
+  "scripts": {
+    "start": "echo 'For shared hosting, simply upload the files to your public_html folder. No build required.'"
+  },
+  "keywords": [
+    "youtube",
+    "seo",
+    "ai",
+    "tools",
+    "creator"
+  ],
+  "author": "YTPANEL.IN",
+  "license": "ISC",
+  "dependencies": {
+    "@google/genai": "*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
