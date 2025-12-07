@@ -1,12 +1,38 @@
-
 import { GoogleGenAI, Modality, Chat } from "@google/genai";
 
+// --- FIX FOR SHARED HOSTING ---
+// Helper function to safely get the API Key environment independent
+const getApiKey = (): string => {
+  // 1. Check Vite Environment Variable (Local Development)
+  // @ts-ignore
+  if (import.meta.env && import.meta.env.VITE_API_KEY) {
+    // @ts-ignore
+    return import.meta.env.VITE_API_KEY;
+  }
+  
+  // 2. Check Global Window Object (Shared Hosting / Production)
+  // This reads the key we will put in index.html later
+  if (typeof window !== 'undefined' && (window as any).process?.env?.API_KEY) {
+    return (window as any).process.env.API_KEY;
+  }
+
+  return ''; // Return empty if not found
+};
+
+const apiKey = getApiKey();
+
 // Initialize the Gemini API client
-// Note: On shared hosting, you must ensure process.env.API_KEY is available or manually replaced here.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// We initialize it even if key is missing to avoid immediate crash, but calls will be guarded
+const ai = new GoogleGenAI({ apiKey: apiKey });
 
 // Standard Text Generation
 export const generateContent = async (prompt: string, model: string = 'gemini-2.5-flash'): Promise<string> => {
+  // Guard: Check if API Key is missing or placeholder
+  if (!apiKey || apiKey.includes('PASTE_YOUR')) {
+    console.error("API Key missing or invalid");
+    return "Configuration Error: API Key is missing. Please edit index.html in your hosting File Manager and add your Gemini API Key.";
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: model,
